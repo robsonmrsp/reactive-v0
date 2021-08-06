@@ -1,9 +1,12 @@
 package com.reactive.demo.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import lombok.Singular;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
@@ -49,6 +52,6 @@ public class OperationEntity {
 	private String code;
 
 	@MappedCollection(idColumn = "operation_id")
-	@Builder.Default
-	private Set<OperationPeriodEffectEntity> periodEffects = new HashSet<>();
+	@Singular
+	private List<OperationPeriodEffectEntity> periodEffects = new ArrayList<>();
 }

@@ -17,7 +17,7 @@ public class OperationMapper {
 
 	public OperationEntity fillTransients(OperationEntity save) {
 		// TODO Auto-generated method stub
-		return null;
+		return save;
 	}
 
 	public static OperationResponse toResponse(final OperationEntity entity) {

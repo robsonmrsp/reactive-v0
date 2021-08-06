@@ -19,13 +19,19 @@ import reactor.core.publisher.Mono;
 public class OperationService {
 
 	private final OperationRepository repository;
+	private final OperationReactiveRepository reactiveRepository;
+	private final OperationReactiveCustomRepositoryImpl operationReactiveCustomRepository;
 	private final OperationMapper operationMapper;
 	private final WorkPeriodService workPeriodService;
 
 	public OperationService(OperationRepository repository,
+			OperationReactiveRepository reactiveRepository,
+			OperationReactiveCustomRepositoryImpl operationReactiveCustomRepository,
 			OperationMapper operationMapper,
 			WorkPeriodService workPeriodService) {
 		this.repository = repository;
+		this.reactiveRepository = reactiveRepository;
+		this.operationReactiveCustomRepository = operationReactiveCustomRepository;
 		this.operationMapper = operationMapper;
 		this.workPeriodService = workPeriodService;
 	}
@@ -56,9 +62,13 @@ public class OperationService {
 				});
 	}
 
+	public Mono<OperationEntity> findByIdReactive(final UUID id) {
+		return this.operationReactiveCustomRepository.findById(id);
+	}
+
 	public Mono<OperationEntity> findById(final UUID id, final UUID clientId, final UUID companyId) {
 		return Mono.fromCallable(
-				() -> repository.findByClientIdAndCompanyIdAndId(clientId, companyId, id)
+				() -> repository.findById(id)
 						.map(this.operationMapper::fillTransients)
 						.orElseThrow(RuntimeException::new));
 	}

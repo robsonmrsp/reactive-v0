@@ -29,4 +29,5 @@ public interface OperationRepository extends PagingAndSortingRepository<Operatio
 
   long countByClientIdAndCompanyId(final UUID clientId, final UUID companyId);
 
+
 }

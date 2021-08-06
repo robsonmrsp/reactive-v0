@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
+import lombok.Singular;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
@@ -50,6 +51,7 @@ public class OperationPeriodEffectEntity {
 	private OperationType operationType;
 
 	@MappedCollection(idColumn = "operation_period_effect_id")
+	@Singular
 	private Set<OperationTaxEntity> taxes;
 
 	@Transient

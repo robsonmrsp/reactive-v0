@@ -1,5 +1,6 @@
 package com.reactive.demo.controller;
 
+import com.reactive.demo.entity.OperationEntity;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -69,13 +70,26 @@ public class OperationController {
 
 	@GetMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
-	public Mono<OperationDetailedResponse> findById(@PathVariable("id") UUID id,
+	public Mono<OperationEntity> findById(@PathVariable("id") UUID id,
 			@RequestParam("clientId") UUID clientId,
 			ServerWebExchange exchange) {
 		final var companyId = UUID.randomUUID();
 
 		return this.service.findById(id, clientId, companyId)
-				.map(OperationMapper::toDetailedResponse)
+				.doOnSuccess(response -> exchange.getResponse().setStatusCode(HttpStatus.OK))
+				.onErrorMap(e -> new RuntimeException(
+						HttpStatus.INTERNAL_SERVER_ERROR.toString()))
+				.subscribeOn(Schedulers.boundedElastic());
+	}
+
+	@GetMapping("/reactive/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public Mono<OperationEntity> findByIdReactive(@PathVariable("id") UUID id,
+																								@RequestParam("clientId") UUID clientId,
+																								ServerWebExchange exchange) {
+		final var companyId = UUID.randomUUID();
+
+		return this.service.findByIdReactive(id)
 				.doOnSuccess(response -> exchange.getResponse().setStatusCode(HttpStatus.OK))
 				.onErrorMap(e -> new RuntimeException(
 						HttpStatus.INTERNAL_SERVER_ERROR.toString()))
