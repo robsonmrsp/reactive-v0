@@ -48,7 +48,7 @@ public class OperationController {
 				.onErrorMap(e -> new RuntimeException())
 				.subscribeOn(Schedulers.boundedElastic());
 
-	} 
+	}
 
 	@PutMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
@@ -72,7 +72,7 @@ public class OperationController {
 	public Mono<OperationDetailedResponse> findById(@PathVariable("id") UUID id,
 			@RequestParam("clientId") UUID clientId,
 			ServerWebExchange exchange) {
-		final var companyId = UUID.randomUUID();
+		final var companyId = UUID.fromString("a64089e6-72ab-4e16-9d1a-271dc01aeb21");
 
 		return this.service.findById(id, clientId, companyId)
 				.map(OperationMapper::toDetailedResponse)
@@ -88,7 +88,7 @@ public class OperationController {
 			PageFilter pageFilter,
 			OperationFilterRequest filters,
 			ServerWebExchange exchange) {
-		final var companyId = UUID.randomUUID();
+		final var companyId = UUID.fromString("a64089e6-72ab-4e16-9d1a-271dc01aeb21");
 
 		return this.service
 				.findAll(clientId, companyId, OperationMapper.toFilter(filters), pageFilter.toPageable())

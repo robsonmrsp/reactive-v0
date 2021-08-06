@@ -39,21 +39,6 @@ public class OperationService {
 		return this.repository
 				.save(entity)
 				.flatMap(this.operationMapper::fillTransients);
-
-//		
-//		return Mono
-//				.fromCallable(() -> this.operationMapper.fillTransients(this.repository.save(entity)))
-//				.flatMap(operationEntity -> {
-//					Optional<OperationPeriodEffectEntity> periodEffectEntity = operationEntity
-//							.getPeriodEffects().stream()
-//							.min(Comparator.comparing(OperationPeriodEffectEntity::getPeriodEffect));
-//					if (periodEffectEntity.isEmpty()) {
-//						return Mono.empty();
-//					}
-//					return workPeriodService.save(
-//							entity.getClientId(), entity.getCompanyId(), UUID.randomUUID(),
-//							periodEffectEntity.get().getPeriodEffect()).thenReturn(operationEntity);
-//				});
 	}
 
 	public Mono<OperationEntity> findById(final UUID id, final UUID clientId, final UUID companyId) {
@@ -65,9 +50,9 @@ public class OperationService {
 	// virá sem o Set<OperationPeriodEffectEntity>
 	public Mono<Page<OperationEntity>> findAll(final UUID clientId, final UUID companyId, final OperationFilter filters, final Pageable pageable) {
 		return repository
-				.findPage(companyId, clientId, filters, pageable.getOffset(), pageable.getPageSize())
+				.findPage(companyId, clientId, pageable.getOffset(), pageable.getPageSize())
 				.collectList()
-				.zipWith(repository.count(clientId, companyId, filters))
+				.zipWith(repository.count(companyId, clientId))
 				.map(countAndList -> getPage(pageable, countAndList));
 	}
 

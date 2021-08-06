@@ -8,32 +8,27 @@ import org.springframework.stereotype.Service;
 
 import com.reactive.demo.entity.WorkPeriodEntity;
 
+import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Service
+@AllArgsConstructor
 public class WorkPeriodService {
 
-	@Autowired
-	WorkPeriodRepository repository;
+	private final WorkPeriodRepository repository;
 
 	public Mono<LocalDate> findWorkPeriod(UUID clientId, UUID companyId) {
-		return Mono.fromCallable(() -> LocalDate.now());
+		return repository.findByClientIdAndCompanyId(clientId, companyId).map(WorkPeriodEntity::getPeriodEffect);
 	}
 
 	public Mono<WorkPeriodEntity> save(UUID clientId, UUID companyId, UUID contactId,
 			LocalDate periodEffect) {
-		return Mono.fromCallable(() -> repository.findByClientIdAndCompanyId(clientId, companyId))
-				.flatMap(entity -> {
-					if (entity.isPresent() && periodEffect.isBefore(entity.get().getPeriodEffect())) {
-						return Mono.fromCallable(() -> repository.save(
-								entity.map(workPeriodEntity -> update(workPeriodEntity, periodEffect, contactId))
-										.get()));
-					} else if (entity.isEmpty()) {
-						return Mono.fromCallable(
-								() -> repository.save(create(clientId, companyId, contactId, periodEffect)));
+		return repository.findByClientIdAndCompanyId(clientId, companyId)
+				.flatMap(workPeriod -> {
+					if (periodEffect.isBefore(workPeriod.getPeriodEffect())) {
+						return repository.save(update(workPeriod, periodEffect, contactId));
 					}
-
-					return Mono.empty();
+					return repository.save(create(clientId, companyId, contactId, periodEffect));
 				});
 	}
 

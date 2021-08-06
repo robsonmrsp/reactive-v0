@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface OperationRepository extends R2dbcRepository<OperationEntity, UUID> {
 
-	public static final String COUNT_PAGE = "select\n"
+	public static final String COUNT_PAGE = "select "
 			+ "	count (*)"
 			+ "from "
 			+ "	operation "
@@ -62,9 +62,13 @@ public interface OperationRepository extends R2dbcRepository<OperationEntity, UU
 
 	// XNOTE : criados esses dois novos metodos para diferenciar dos demais que já
 	// existiam. No original essa Page é criada por um customRepository
-	@Query(FIND_PAGE_ALL)
-	Flux<OperationEntity> findPage(UUID companyId, UUID clientId, OperationFilter filters, long offset, int pageSize);
 
 	@Query(FIND_PAGE_ALL)
-	Mono<Long> count(UUID companyId, UUID clientId, OperationFilter filters);
+	Flux<OperationEntity> findPage(@Param("companyId") UUID companyId, @Param("clientId") UUID clientId,
+			@Param("offset") Long offset, @Param("pageSize") Integer pageSize);
+
+//  XNOTE : removido o filters pois tava com o seguinte erro:
+//	java.lang.RuntimeException: java.lang.IllegalArgumentException: Value must not be null
+	@Query(COUNT_PAGE)
+	Mono<Long> count(@Param("companyId") UUID companyId, @Param("clientId") UUID clientId);
 }

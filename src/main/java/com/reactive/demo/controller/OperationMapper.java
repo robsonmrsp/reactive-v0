@@ -24,7 +24,9 @@ public class OperationMapper {
 
 	public static OperationResponse toResponse(final OperationEntity entity) {
 
-		return OperationResponse.builder().build();
+		return OperationResponse.builder()
+				.code(entity.getCode())
+				.build();
 	}
 
 	private static Optional<OperationPeriodEffectEntity> getCurrentPeriodEffect() {
