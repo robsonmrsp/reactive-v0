@@ -12,16 +12,18 @@ import com.reactive.demo.entity.OperationEntity;
 import com.reactive.demo.entity.OperationPeriodEffectEntity;
 import com.reactive.demo.service.OperationFilter;
 
+import reactor.core.publisher.Mono;
+
 @Component
 public class OperationMapper {
 
-	public OperationEntity fillTransients(OperationEntity save) {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<OperationEntity> fillTransients(OperationEntity save) {
+
+		return Mono.just(OperationEntity.builder().build());
 	}
 
 	public static OperationResponse toResponse(final OperationEntity entity) {
-		
+
 		return OperationResponse.builder().build();
 	}
 
